@@ -1,18 +1,17 @@
-from flask import Flask, jsonify
+import time
 import requests
-import os
-
-app = Flask(__name__)
 
 API_URL = os.environ.get("API_URL", "http://api:5000")
 
+def get_api_data():
+    for _ in range(10):
+        try:
+            r = requests.get(f"{API_URL}/data")
+            return r.json()
+        except requests.exceptions.RequestException:
+            time.sleep(1)
+    return {"error": "API not reachable"}
+
 @app.route('/')
 def index():
-    try:
-        r = requests.get(f"{API_URL}/data")
-        return jsonify({"status": "success", "api_data": r.json()})
-    except Exception as e:
-        return jsonify({"status": "error", "error": str(e)})
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8181)
+    return jsonify({"status": "success", "api_data": get_api_data()})
