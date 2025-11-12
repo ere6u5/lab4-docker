@@ -36,4 +36,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/user/lab4-docker
-            docker compose up -d --build
+            docker-compose up -d --build
