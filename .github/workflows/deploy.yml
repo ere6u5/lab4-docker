@@ -25,6 +25,7 @@ jobs:
           host: ${{ secrets.FRP_PROXY }}
           port: ${{ secrets.SSH_PORT }}
           username: user
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Run Docker Compose
         uses: appleboy/ssh-action@v1
