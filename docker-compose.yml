@@ -1,17 +1,6 @@
 version: "3.9"
 
 services:
-  app:
-    build: ./app
-    ports:
-      - "8181:8181"
-    environment:
-      - API_URL=http://api:5000
-    depends_on:
-      - api
-    volumes:
-      - app-data:/app/data
-
   api:
     build: ./api
     ports:
@@ -21,7 +10,25 @@ services:
     volumes:
       - api-data:/data
       - ./db_init.sql:/data/db_init.sql
-    command: ["sh", "-c", "sqlite3 /data/db.sqlite < /data/db_init.sql && python api.py"]
+    command: >
+      sh -c "sqlite3 /data/db.sqlite < /data/db_init.sql && python api.py"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/data || exit 1"]
+      interval: 2s
+      retries: 10
+      start_period: 5s
+
+  app:
+    build: ./app
+    ports:
+      - "8181:8181"
+    environment:
+      - API_URL=http://api:5000
+    depends_on:
+      api:
+        condition: service_healthy
+    volumes:
+      - app-data:/app/data
 
 volumes:
   app-data:
