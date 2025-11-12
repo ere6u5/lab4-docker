@@ -1,0 +1,38 @@
+name: Deploy Lab4
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Copy and deploy Docker Compose
+        uses: appleboy/scp-action@v1
+        with:
+          source: "."
+          target: "/home/user/lab4-docker"
+          host: ${{ secrets.FRP_PROXY }}
+          port: ${{ secrets.SSH_PORT }}
+          username: user
+
+      - name: Run Docker Compose
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.FRP_PROXY }}
+          port: ${{ secrets.SSH_PORT }}
+          username: user
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/user/lab4-docker
+            docker compose up -d --build
