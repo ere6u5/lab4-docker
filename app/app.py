@@ -10,7 +10,7 @@ API_URL = os.environ.get("API_URL", "http://api:5000")
 def index():
     try:
         r = requests.get(f"{API_URL}/data")
-        return jsonify({"status": "success1", "api_data": r.json()})
+        return jsonify({"status": "success11", "api_data": r.json()})
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)})
 
