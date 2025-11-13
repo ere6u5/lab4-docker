@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   app:
-    build: ./app
+    image: ghcr.io/ere6u5/lab4-docker/lab4-app:${TAG}
     ports:
       - "8181:8181"
     environment:
@@ -13,7 +13,7 @@ services:
       - app-data:/app/data
 
   api:
-    build: ./api
+    image: ghcr.io/ere6u5/lab4-docker/lab4-api:${TAG}
     ports:
       - "5000:5000"
     environment:
